@@ -1,0 +1,69 @@
+cmake_minimum_required(VERSION 4.0)
+
+project(VulkanWorkspace)
+
+
+set(CMAKE_CXX_STANDARD 20)
+#set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+
+# ==========================
+# 自动添加第三方库include
+# ==========================
+
+set(LIBRARY_DIR ${CMAKE_SOURCE_DIR}/library)
+
+
+file(GLOB LIBRARIES
+    ${LIBRARY_DIR}/*
+)
+
+
+foreach(LIBRARY ${LIBRARIES})
+
+    if(IS_DIRECTORY ${LIBRARY})
+
+        message(STATUS "Found library: ${LIBRARY}")
+
+
+        if(EXISTS ${LIBRARY}/include)
+
+            include_directories(
+                ${LIBRARY}/include
+            )
+
+            message(STATUS
+                "Add include: ${LIBRARY}/include"
+            )
+
+        endif()
+
+    endif()
+
+endforeach()
+
+#添加Vulkan库
+find_package(Vulkan REQUIRED)
+
+link_libraries(Vulkan::Vulkan)
+# ==========================
+# 添加项目
+# ==========================
+
+file(GLOB PROJECTS
+    RELATIVE ${CMAKE_SOURCE_DIR}
+    "*"
+)
+
+foreach(PROJECT_DIR ${PROJECTS})
+    if(
+        IS_DIRECTORY ${PROJECT_DIR}
+        AND EXISTS ${PROJECT_DIR}/CMakeLists.txt
+    )
+
+        add_subdirectory(${PROJECT_DIR})
+
+    endif()
+
+endforeach()
+

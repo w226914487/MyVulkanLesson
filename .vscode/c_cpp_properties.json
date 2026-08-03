@@ -1,0 +1,22 @@
+{
+  "configurations": [
+    {
+      "name": "Win32",
+      // C/C++ 标准：按需设置
+      "cStandard": "c17",
+      "cppStandard": "c++20",
+      // 头文件包含路径：这是最关键的部分
+      "includePath": [
+        "C:/Program Files/VulkanSDK/Include",
+        "C:/code/Vulkan/library/",
+        "${workspaceFolder}/**"],
+
+      "defines": [
+        "_DEBUG",
+        "UNICODE",
+        "_UNICODE"
+      ]
+    }
+  ],
+  "version": 4
+}
