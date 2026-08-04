@@ -20,6 +20,7 @@ namespace render2d{
         createInstance();
         pickUpPhysicalDevice();
         queryQueueFamilyIndices();
+        //创建逻辑设备
         createDevice();
         getQueues();
     };
@@ -29,7 +30,6 @@ namespace render2d{
     };
 
     void Context::createInstance(){
-        std::cout << "Creating Vulkan instance..." << std::endl;
         vk::InstanceCreateInfo creatInfo;
         vk::ApplicationInfo appInfo;
         appInfo.setApiVersion(VK_API_VERSION_1_4);
@@ -59,6 +59,7 @@ namespace render2d{
         device = phyDevice.createDevice(createInfo);
     };
     void Context::queryQueueFamilyIndices(){
+        //查询物理设备中队列家族属性
         auto properties = phyDevice.getQueueFamilyProperties();
         for (int i=0;i<properties.size();i++){
             const auto& property = properties[i];
