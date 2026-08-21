@@ -1,13 +1,14 @@
 #include "context.hpp"
 #include <iostream>
+#include "render2d.hpp"
 
 
 namespace render2d{
     std::unique_ptr<Context> Context::instance_ = nullptr;
     
-    void Context::Init(){
+    void Context::Init(const std::vector<const char*>& extensions,CreateSurfaceFunc func,int w,int h){
         if(!instance_){
-            instance_.reset(new Context);
+            instance_.reset(new Context(extensions,func,w,h));
         }
     };
     void Context::Quit(){instance_.reset();};
@@ -16,27 +17,31 @@ namespace render2d{
         return *instance_;
     };
     
-    Context::Context(){
-        createInstance();
+    Context::Context(const std::vector<const char*>& extensions,CreateSurfaceFunc func,int w,int h){
+        createInstance(extensions,func,w,h);
         pickUpPhysicalDevice();
         queryQueueFamilyIndices();
+        surface = func(instance);
         //创建逻辑设备
         createDevice();
         getQueues();
+        swapchain.reset(new Swapchain(w,h));
     };
-    Context::~Context(){  
+    Context::~Context(){
+        swapchain.reset();  
         device.destroy();
-        //instance.destroy();
+        instance.destroy();
     };
 
-    void Context::createInstance(){
+    void Context::createInstance(const std::vector<const char*>& extensions,CreateSurfaceFunc func,int w,int h){
         vk::InstanceCreateInfo creatInfo;
         vk::ApplicationInfo appInfo;
         appInfo.setApiVersion(VK_API_VERSION_1_4);
         creatInfo.setPApplicationInfo(&appInfo);
         //开启调试层
         std::vector<const char*> layers ={"VK_LAYER_KHRONOS_validation"};
-        creatInfo.setPEnabledLayerNames(layers);
+        creatInfo.setPEnabledLayerNames(layers)
+                 .setPEnabledExtensionNames(extensions);
         instance = vk::createInstance(creatInfo);
     };
     void Context::pickUpPhysicalDevice(){
@@ -49,13 +54,25 @@ namespace render2d{
     };
     void Context::createDevice(){
         vk::DeviceCreateInfo createInfo;
-        vk::DeviceQueueCreateInfo queueCreateInfo;
+        std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;
         float priorities = 1.0;
-        queueCreateInfo.setPQueuePriorities(&priorities)
+        if(queueFamilyIndices.presentQueue.value() == queueFamilyIndices.graphicsQueue.value()){
+            vk::DeviceQueueCreateInfo queueCreateInfo;
+            queueCreateInfo.setPQueuePriorities(&priorities)
                        .setQueueCount(1)
                        .setQueueFamilyIndex(queueFamilyIndices.graphicsQueue.value());
-
-        createInfo.setQueueCreateInfos(queueCreateInfo);
+            queueCreateInfos.push_back(std::move(queueCreateInfo));
+        }else{
+            vk::DeviceQueueCreateInfo queueCreateInfo;
+            queueCreateInfo.setPQueuePriorities(&priorities)
+                       .setQueueCount(1)
+                       .setQueueFamilyIndex(queueFamilyIndices.graphicsQueue.value());
+            queueCreateInfos.push_back(queueCreateInfo);
+            queueCreateInfo.setPQueuePriorities(&priorities)
+                       .setQueueCount(1)
+                       .setQueueFamilyIndex(queueFamilyIndices.presentQueue.value());
+            queueCreateInfos.push_back(queueCreateInfo);}
+        createInfo.setQueueCreateInfos(queueCreateInfos);
         device = phyDevice.createDevice(createInfo);
     };
     void Context::queryQueueFamilyIndices(){
@@ -65,12 +82,18 @@ namespace render2d{
             const auto& property = properties[i];
             if(property.queueFlags | vk::QueueFlagBits::eGraphics){
                 queueFamilyIndices.graphicsQueue = i;
+            }
+            if(phyDevice.getSurfaceSupportKHR(i,surface)){
+            queueFamilyIndices.presentQueue = i;
+            }
+            if(queueFamilyIndices){
                 break;
             }
         }
-
+        
     };
     void Context::getQueues(){
         graphicsQueue = device.getQueue(queueFamilyIndices.graphicsQueue.value(),0);
+        presentQueue = device.getQueue(queueFamilyIndices.presentQueue.value(),0);
     };
 }
