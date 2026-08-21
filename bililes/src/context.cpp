@@ -31,6 +31,7 @@ namespace render2d{
         swapchain.reset();  
         device.destroy();
         instance.destroy();
+        instance.destroySurfaceKHR(surface);
     };
 
     void Context::createInstance(const std::vector<const char*>& extensions,CreateSurfaceFunc func,int w,int h){
