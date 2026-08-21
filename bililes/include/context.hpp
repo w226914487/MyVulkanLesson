@@ -5,6 +5,7 @@
 #include <optional>
 #include "render2d.hpp"
 #include "swapchain.hpp"
+#include "tools.hpp"
 
 namespace render2d{
     class Context final{
@@ -22,7 +23,7 @@ namespace render2d{
         std::unique_ptr<Swapchain> swapchain;
         struct QueueFamilyIndices {std::optional<uint32_t> graphicsQueue;
                                    std::optional<uint32_t> presentQueue;
-                                   operator bool() const {graphicsQueue.has_value() && presentQueue.has_value();}
+                                   operator bool() const {return graphicsQueue.has_value() && presentQueue.has_value();}
         };
         QueueFamilyIndices queueFamilyIndices;
     private:

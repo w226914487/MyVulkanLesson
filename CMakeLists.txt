@@ -66,4 +66,7 @@ foreach(PROJECT_DIR ${PROJECTS})
     endif()
 
 endforeach()
-
+#加入glfw编译
+add_subdirectory(
+    ${CMAKE_SOURCE_DIR}/library/glfw-3.4
+)

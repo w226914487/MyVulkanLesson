@@ -16,7 +16,7 @@ int main(){
 
     render2d::Init(extensions,[&](vk::Instance instance){
         VkSurfaceKHR surface;
-        glfwCreateWindowSurface(instance,window,nullptr,&surface);
+        VkResult result = glfwCreateWindowSurface(instance,window,nullptr,&surface);
         return surface;},1280,720);
     render2d::Quit();
 
