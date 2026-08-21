@@ -6,9 +6,9 @@
 namespace render2d{
     std::unique_ptr<Context> Context::instance_ = nullptr;
     
-    void Context::Init(const std::vector<const char*>& extensions,CreateSurfaceFunc func,int w,int h){
+    void Context::Init(const std::vector<const char*>& extensions,CreateSurfaceFunc func){
         if(!instance_){
-            instance_.reset(new Context(extensions,func,w,h));
+            instance_.reset(new Context(extensions,func));
         }
     };
     void Context::Quit(){instance_.reset();};
@@ -17,15 +17,14 @@ namespace render2d{
         return *instance_;
     };
     
-    Context::Context(const std::vector<const char*>& extensions,CreateSurfaceFunc func,int w,int h){
-        createInstance(extensions,func,w,h);
+    Context::Context(const std::vector<const char*>& extensions,CreateSurfaceFunc func){
+        createInstance(extensions,func);
         pickUpPhysicalDevice();
         surface = func(instance);
         queryQueueFamilyIndices();
         //创建逻辑设备
         createDevice();
         getQueues();
-        swapchain.reset(new Swapchain(w,h));
     };
     Context::~Context(){
         swapchain.reset();  
@@ -34,7 +33,7 @@ namespace render2d{
         instance.destroySurfaceKHR(surface);
     };
 
-    void Context::createInstance(const std::vector<const char*>& extensions,CreateSurfaceFunc func,int w,int h){
+    void Context::createInstance(const std::vector<const char*>& extensions,CreateSurfaceFunc func){
         vk::InstanceCreateInfo creatInfo;
         vk::ApplicationInfo appInfo;
         appInfo.setApiVersion(VK_API_VERSION_1_4);

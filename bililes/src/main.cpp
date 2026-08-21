@@ -18,14 +18,11 @@ int main(){
     render2d::Init(extensions,[&](vk::Instance instance){
         VkSurfaceKHR surface;
         VkResult result = glfwCreateWindowSurface(instance,window,nullptr,&surface);
-        return surface;},1280,720);
+        return surface;},1280,720); 
     while(!glfwWindowShouldClose(window)){glfwPollEvents();}
-    
-
     render2d::Quit();
     glfwDestroyWindow(window);
     glfwTerminate();
-
 
     return 0;
 }
