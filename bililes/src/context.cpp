@@ -20,8 +20,8 @@ namespace render2d{
     Context::Context(const std::vector<const char*>& extensions,CreateSurfaceFunc func,int w,int h){
         createInstance(extensions,func,w,h);
         pickUpPhysicalDevice();
-        queryQueueFamilyIndices();
         surface = func(instance);
+        queryQueueFamilyIndices();
         //创建逻辑设备
         createDevice();
         getQueues();

@@ -18,6 +18,9 @@ int main(){
         VkSurfaceKHR surface;
         VkResult result = glfwCreateWindowSurface(instance,window,nullptr,&surface);
         return surface;},1280,720);
+    while(!glfwWindowShouldClose(window)){glfwPollEvents();}
+    
+
     render2d::Quit();
 
 
