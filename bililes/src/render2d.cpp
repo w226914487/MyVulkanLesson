@@ -8,6 +8,7 @@ namespace render2d{
 
     };
     void Quit(){
+        Context::GetInstance().DestroySwapchain();
         Context::Quit();
     };
 

@@ -27,10 +27,10 @@ namespace render2d{
         getQueues();
     };
     Context::~Context(){
-        swapchain.reset();  
+        instance.destroySurfaceKHR(surface);
+          
         device.destroy();
         instance.destroy();
-        instance.destroySurfaceKHR(surface);
     };
 
     void Context::createInstance(const std::vector<const char*>& extensions,CreateSurfaceFunc func){
@@ -53,6 +53,8 @@ namespace render2d{
         std::cout<<phyDevice.getProperties().deviceName<<std::endl;
     };
     void Context::createDevice(){
+        std::array extensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+
         vk::DeviceCreateInfo createInfo;
         std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;
         float priorities = 1.0;
@@ -72,7 +74,8 @@ namespace render2d{
                        .setQueueCount(1)
                        .setQueueFamilyIndex(queueFamilyIndices.presentQueue.value());
             queueCreateInfos.push_back(queueCreateInfo);}
-        createInfo.setQueueCreateInfos(queueCreateInfos);
+        createInfo.setQueueCreateInfos(queueCreateInfos)
+                  .setPEnabledExtensionNames(extensions);
         device = phyDevice.createDevice(createInfo);
     };
     void Context::queryQueueFamilyIndices(){

@@ -29,6 +29,10 @@ namespace render2d{
         void InitSwapchain(int w,int h){
             swapchain.reset(new Swapchain(w,h));
         }
+        void DestroySwapchain(){
+            swapchain.reset();
+        };
+
     private:
         Context(const std::vector<const char*>& extensions,CreateSurfaceFunc func);
         static std::unique_ptr<Context> instance_;
