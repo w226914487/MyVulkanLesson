@@ -27,8 +27,7 @@ namespace render2d{
         getQueues();
     };
     Context::~Context(){
-        instance.destroySurfaceKHR(surface);
-          
+        instance.destroySurfaceKHR(surface);  
         device.destroy();
         instance.destroy();
     };

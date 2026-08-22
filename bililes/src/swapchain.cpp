@@ -33,7 +33,7 @@ namespace render2d{
     void Swapchain::queryInfo(int w,int h){
         auto& phyDevice = Context::GetInstance().phyDevice;
         auto& surface = Context::GetInstance().surface;
-        auto formats = phyDevice.getSurfaceFormatsKHR();
+        auto formats = phyDevice.getSurfaceFormatsKHR(surface);
         //设置默认值
         info.format = formats[0];
         for(const auto& format : formats){
