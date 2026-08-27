@@ -15,6 +15,10 @@ namespace render2d{
             vk::PresentModeKHR present;
         };
         SwapchainInfo info;
+        std::vector<vk::Image> images;
+        std::vector<vk::ImageView> imageViews;
         void queryInfo(int w,int h);
+        void getImages();
+        void getImageViews();
     };
 }

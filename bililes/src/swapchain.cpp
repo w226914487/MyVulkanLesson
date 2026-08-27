@@ -28,7 +28,11 @@ namespace render2d{
         swapchain = Context::GetInstance().device.createSwapchainKHR(createInfo);
     };
     Swapchain::~Swapchain(){
+        for(auto& view : imageViews){
+            Context::GetInstance().device.destroyImageView(view);
+        }
         Context::GetInstance().device.destroySwapchainKHR(swapchain);
+
     };
     void Swapchain::queryInfo(int w,int h){
         auto& phyDevice = Context::GetInstance().phyDevice;
@@ -62,7 +66,29 @@ namespace render2d{
         }
 
     };
-
+    void Swapchain::getImages(){
+        images = Context::GetInstance().device.getSwapchainImagesKHR(swapchain);
+    };
+    void Swapchain::getImageViews(){
+        imageViews.resize(images.size());
+        //这里会自动设为Identity
+        vk::ComponentMapping mapping;
+        vk::ImageSubresourceRange range;
+        range.setBaseMipLevel(0)
+             .setLayerCount(1)
+             .setBaseArrayLayer(0)
+             .setLayerCount(1)
+             .setAspectMask(vk::ImageAspectFlagBits::eColor);
+        for(int i = 0;i < images.size();i++){
+            vk::ImageViewCreateInfo createInfo;
+            createInfo.setImage(images[i])
+                      .setViewType(vk::ImageViewType::e2D)
+                      .setComponents(mapping)
+                      .setFormat(info.format.format)
+                      .setSubresourceRange(range);
+            imageViews[i] = Context::GetInstance().device.createImageView(createInfo);
+        }
+    };
 
 
 }
