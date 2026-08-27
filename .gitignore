@@ -4,3 +4,4 @@ library/
 *.zip
 build.ps1
 CMakeCache.txt
+.spv
