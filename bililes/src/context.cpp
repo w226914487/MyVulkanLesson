@@ -25,6 +25,8 @@ namespace render2d{
         //创建逻辑设备
         createDevice();
         getQueues();
+        renderProcess.reset(new RenderProcess);
+        
     };
     Context::~Context(){
         instance.destroySurfaceKHR(surface);  

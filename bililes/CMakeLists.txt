@@ -12,6 +12,7 @@ add_executable(
     ${PROJECT_NAME}
     ${srcs}
 )
+#自动编译spv
 find_program(GLSLC_PROGRAM glslc REQUIRED)
 execute_process(COMMAND ${GLSLC_PROGRAM} ${PROJECT_SOURCE_DIR}/shader/shader.vert -o ${PROJECT_SOURCE_DIR}/vert.spv)
 execute_process(COMMAND ${GLSLC_PROGRAM} ${PROJECT_SOURCE_DIR}/shader/shader.frag -o ${PROJECT_SOURCE_DIR}/frag.spv)

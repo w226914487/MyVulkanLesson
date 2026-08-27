@@ -6,6 +6,7 @@
 #include "render2d.hpp"
 #include "swapchain.hpp"
 #include "tools.hpp"
+#include "renderprocess.hpp"
 
 namespace render2d{
     class Context final{
@@ -21,6 +22,7 @@ namespace render2d{
         vk::Queue presentQueue;
         vk::SurfaceKHR surface;
         std::unique_ptr<Swapchain> swapchain;
+        std::unique_ptr<RenderProcess> renderProcess;
         struct QueueFamilyIndices {std::optional<uint32_t> graphicsQueue;
                                    std::optional<uint32_t> presentQueue;
                                    operator bool() const {return graphicsQueue.has_value() && presentQueue.has_value();}
