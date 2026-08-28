@@ -1,7 +1,7 @@
 #include "renderprocess.hpp"
 #include "shader.hpp"
 #include "context.hpp"
-
+#include "swapchain.hpp"
 
 namespace render2d{
     void RenderProcess::InitPipeline(int width,int height){
@@ -53,19 +53,56 @@ namespace render2d{
         blend.setLogicOpEnable(false)
              .setAttachments(attachs);
         createInfo.setPColorBlendState(&blend);
-        
+        //vulkan特有
+        //layout renderPass
+        createInfo.setRenderPass(renderPass)
+                  .setLayout(layout);
         auto result = Context::GetInstance().device.createGraphicsPipeline(nullptr,createInfo);
         if(result.result != vk::Result::eSuccess){
             throw std::runtime_error("create graphics pipeline faild");
         }
         pipeline = result.value;
-        //vulkan特有
-        //layout
-        //renderPass
     };
-    void RenderProcess::DestroyPipeline(){
-        Context::GetInstance().device.destroyPipeline(pipeline);
+    RenderProcess::~RenderProcess(){
+        auto& device = Context::GetInstance().device;
+        device.destroyRenderPass(renderPass);
+        device.destroyPipelineLayout(layout);
+        device.destroyPipeline(pipeline);
     };
+    void RenderProcess::InitLayout(){
+        vk::PipelineLayoutCreateInfo createInfo;
+        layout = Context::GetInstance().device.createPipelineLayout(createInfo);
+    };
+    void RenderProcess::InitRenderPass(){
+        vk::RenderPassCreateInfo createInfo;
+        vk::AttachmentDescription attachDesc;
 
+        attachDesc.setFormat(Context::GetInstance().swapchain->info.format.format)
+                  .setInitialLayout(vk::ImageLayout::eUndefined)
+                  .setFinalLayout(vk::ImageLayout::eColorAttachmentOptimal)
+                  .setLoadOp(vk::AttachmentLoadOp::eClear)
+                  .setStoreOp(vk::AttachmentStoreOp::eStore)
+                  //因为没有所以dontcare
+                  .setStencilLoadOp(vk::AttachmentLoadOp::eDontCare)
+                  .setStencilStoreOp(vk::AttachmentStoreOp::eDontCare)
+                  .setSamples(vk::SampleCountFlagBits::e1);
+        createInfo.setAttachments(attachDesc);
+
+        vk::AttachmentReference reference;
+        reference.setLayout(vk::ImageLayout::eColorAttachmentOptimal)
+                 .setAttachment(0);
+        vk::SubpassDescription subpass;
+        subpass.setPipelineBindPoint(vk::PipelineBindPoint::eGraphics)
+               .setColorAttachments(reference);
+        createInfo.setSubpasses(subpass);
+        vk::SubpassDependency dependency;
+        dependency.setSrcSubpass(VK_SUBPASS_EXTERNAL)
+                  .setDstSubpass(0)
+                  .setDstAccessMask(vk::AccessFlagBits::eColorAttachmentWrite)
+                  .setSrcStageMask(vk::PipelineStageFlagBits::eColorAttachmentOutput)
+                  .setDstStageMask(vk::PipelineStageFlagBits::eColorAttachmentOutput);
+        createInfo.setDependencies(dependency);
+        renderPass = Context::GetInstance().device.createRenderPass(createInfo);
+    };
 
 }
