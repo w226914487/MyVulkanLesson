@@ -28,6 +28,9 @@ namespace render2d{
         swapchain = Context::GetInstance().device.createSwapchainKHR(createInfo);
     };
     Swapchain::~Swapchain(){
+        for(auto& framebuffer : framebuffers){
+            Context::GetInstance().device.destroyFramebuffer(framebuffer);
+        }
         for(auto& view : imageViews){
             Context::GetInstance().device.destroyImageView(view);
         }
@@ -69,7 +72,7 @@ namespace render2d{
     void Swapchain::getImages(){
         images = Context::GetInstance().device.getSwapchainImagesKHR(swapchain);
     };
-    void Swapchain::getImageViews(){
+    void Swapchain::createImageViews(){
         imageViews.resize(images.size());
         //这里会自动设为Identity
         vk::ComponentMapping mapping;
@@ -89,6 +92,17 @@ namespace render2d{
             imageViews[i] = Context::GetInstance().device.createImageView(createInfo);
         }
     };
-
+    void Swapchain::CreateFramebuffers(int w,int h){
+        framebuffers.resize(images.size());
+        for(int i = 0;i < framebuffers.size();i++){
+            vk::FramebufferCreateInfo createInfo;
+            createInfo.setAttachments(imageViews[i])
+                      .setWidth(w)
+                      .setHeight(h)
+                      .setRenderPass(Context::GetInstance().renderProcess->renderPass)
+                      .setLayers(1);
+            framebuffers[i] = Context::GetInstance().device.createFramebuffer(createInfo);
+        }
+    };
 
 }

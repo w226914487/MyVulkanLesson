@@ -8,6 +8,7 @@ namespace render2d{
         Shader::Init(ReadWholeFile("./vert.spv"),ReadWholeFile("./frag.spv"));
         Context::GetInstance().renderProcess->InitRenderPass();
         Context::GetInstance().renderProcess->InitLayout();
+        Context::GetInstance().swapchain->CreateFramebuffers(w,h);
         Context::GetInstance().renderProcess->InitPipeline(w,h);    
     };
     void Quit(){
