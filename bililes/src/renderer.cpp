@@ -38,7 +38,9 @@ namespace render2d{
         auto& swapchain = Context::GetInstance().swapchain;
         auto result = device.acquireNextImageKHR(swapchain->swapchain,
                                                   //代表无限等待
-                                                  std::numeric_limits<uint64_t>::max());
+                                                  std::numeric_limits<uint64_t>::max(),
+                                                  imageAvaliable_,
+                                                  nullptr);
         
         if(result.result != vk::Result::eSuccess) {
             std::cout<<"acquire next image failed"<<std::endl;
@@ -65,15 +67,19 @@ namespace render2d{
                            .setFramebuffer(swapchain->framebuffers[imageIndex])
                            .setClearValues(clearValue);
             cmdBuf_.beginRenderPass(renderPassBegin,{});
+            cmdBuf_.bindPipeline(vk::PipelineBindPoint::eGraphics,renderProcess->pipeline);
             //绘制顶点数，绘制图形数，绘制起始下标，第一个instance的下表
             cmdBuf_.draw(3,1,0,0);
 
             cmdBuf_.endRenderPass();
         }
         cmdBuf_.end();
-
         vk::SubmitInfo submit;
+        //告诉GPU这个semaphore的等待要阻止到哪个pipeline stage
+        vk::PipelineStageFlags waitStage = vk::PipelineStageFlagBits::eColorAttachmentOutput;
+
         submit.setWaitSemaphores(imageAvaliable_)
+              .setWaitDstStageMask(waitStage)
               .setCommandBuffers(cmdBuf_)
               .setSignalSemaphores(imageDrawFinish_);
         Context::GetInstance().graphicsQueue.submit(submit,cmdAvaliableFence_);
