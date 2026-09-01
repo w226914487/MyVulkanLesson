@@ -73,7 +73,8 @@ namespace render2d{
         cmdBuf_.end();
 
         vk::SubmitInfo submit;
-        submit.setCommandBuffers(cmdBuf_)
+        submit.setWaitSemaphores(imageAvaliable_)
+              .setCommandBuffers(cmdBuf_)
               .setSignalSemaphores(imageDrawFinish_);
         Context::GetInstance().graphicsQueue.submit(submit,cmdAvaliableFence_);
 
