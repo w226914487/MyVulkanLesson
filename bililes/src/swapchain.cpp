@@ -26,6 +26,9 @@ namespace render2d{
                       .setImageSharingMode(vk::SharingMode::eConcurrent);
         }
         swapchain = Context::GetInstance().device.createSwapchainKHR(createInfo);
+
+        getImages();
+        createImageViews();
     };
     Swapchain::~Swapchain(){
         for(auto& framebuffer : framebuffers){

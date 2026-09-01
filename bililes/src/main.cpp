@@ -6,6 +6,7 @@
 #include <GLFW/glfw3native.h>
 #include <iostream>
 int main(){
+    
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     GLFWwindow* window = glfwCreateWindow(1280,720,"Vulkan",nullptr,nullptr);
@@ -19,7 +20,11 @@ int main(){
         VkSurfaceKHR surface;
         VkResult result = glfwCreateWindowSurface(instance,window,nullptr,&surface);
         return surface;},1280,720); 
-    while(!glfwWindowShouldClose(window)){glfwPollEvents();}
+    auto& renderer = render2d::GetRenderer();
+    while(!glfwWindowShouldClose(window)){
+        //glfwPollEvents();
+        renderer.Render();
+    }
     render2d::Quit();
     glfwDestroyWindow(window);
     glfwTerminate();

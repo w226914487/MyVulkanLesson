@@ -28,7 +28,7 @@ namespace render2d{
         vk::PipelineRasterizationStateCreateInfo rastInfo;
         rastInfo.setRasterizerDiscardEnable(false)
                 .setCullMode(vk::CullModeFlagBits::eBack)
-                .setFrontFace(vk::FrontFace::eCounterClockwise)
+                .setFrontFace(vk::FrontFace::eClockwise)
                 .setPolygonMode(vk::PolygonMode::eFill)
                 .setLineWidth(1);
                 //二维不提及
@@ -79,7 +79,7 @@ namespace render2d{
 
         attachDesc.setFormat(Context::GetInstance().swapchain->info.format.format)
                   .setInitialLayout(vk::ImageLayout::eUndefined)
-                  .setFinalLayout(vk::ImageLayout::eColorAttachmentOptimal)
+                  .setFinalLayout(vk::ImageLayout::ePresentSrcKHR)
                   .setLoadOp(vk::AttachmentLoadOp::eClear)
                   .setStoreOp(vk::AttachmentStoreOp::eStore)
                   //因为没有所以dontcare
