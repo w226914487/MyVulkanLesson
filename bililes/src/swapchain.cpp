@@ -81,7 +81,7 @@ namespace render2d{
         vk::ComponentMapping mapping;
         vk::ImageSubresourceRange range;
         range.setBaseMipLevel(0)
-             .setLayerCount(1)
+             .setLevelCount(1)
              .setBaseArrayLayer(0)
              .setLayerCount(1)
              .setAspectMask(vk::ImageAspectFlagBits::eColor);
