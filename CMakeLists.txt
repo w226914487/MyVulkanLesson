@@ -49,24 +49,39 @@ link_libraries(Vulkan::Vulkan)
 # ==========================
 # 添加项目
 # ==========================
+#file(GLOB PROJECTS
+#    RELATIVE ${CMAKE_SOURCE_DIR}
+#    "*"
+#)
 
-file(GLOB PROJECTS
-    RELATIVE ${CMAKE_SOURCE_DIR}
-    "*"
+#foreach(PROJECT_DIR ${PROJECTS})
+#   if(
+#        IS_DIRECTORY ${PROJECT_DIR}
+#        AND EXISTS ${PROJECT_DIR}/CMakeLists.txt
+#    )
+#        add_subdirectory(${PROJECT_DIR})
+#
+#    endif()
+#
+#endforeach()
+
+file(GLOB CHILD_PROJECTS
+    CONFIGURE_DEPENDS
+    "${CMAKE_SOURCE_DIR}/*"
 )
-
-foreach(PROJECT_DIR ${PROJECTS})
-    if(
-        IS_DIRECTORY ${PROJECT_DIR}
-        AND EXISTS ${PROJECT_DIR}/CMakeLists.txt
-    )
-
-        add_subdirectory(${PROJECT_DIR})
-
+foreach(PROJECT_DIR ${CHILD_PROJECTS})
+        if(
+            IS_DIRECTORY ${PROJECT_DIR} 
+            AND EXISTS ${PROJECT_DIR}/CMakeLists.txt
+        )
+        add_subdirectory("${PROJECT_DIR}")
+    else()
     endif()
-
 endforeach()
+
 #加入glfw编译
 add_subdirectory(
     ${CMAKE_SOURCE_DIR}/library/glfw-3.4
 )
+message(STATUS "========== MY AUTO PROJECT SCAN ==========")
+

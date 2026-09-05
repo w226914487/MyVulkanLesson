@@ -5,6 +5,7 @@ project(bililes)
 file(GLOB_RECURSE srcs CONFIGURE_DEPENDS
     src/*.cpp
     include/*.h
+    include/*.hpp
 )
 
 
