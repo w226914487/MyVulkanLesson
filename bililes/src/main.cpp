@@ -1,5 +1,6 @@
 #include "context.hpp"
 #include "render2d.hpp"
+//#define STB_IMAGE_IMPLEMENTATION
 //#include <STB/stb_image.h>
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32

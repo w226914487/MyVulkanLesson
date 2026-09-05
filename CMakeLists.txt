@@ -81,7 +81,5 @@ endforeach()
 
 #加入glfw编译
 add_subdirectory(
-    ${CMAKE_SOURCE_DIR}/library/glfw-3.4
+    ${CMAKE_SOURCE_DIR}/library/glfw-3.5.1
 )
-message(STATUS "========== MY AUTO PROJECT SCAN ==========")
-
