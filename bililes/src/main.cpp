@@ -6,7 +6,6 @@
 #include <GLFW/glfw3native.h>
 #include <iostream>
 int main(){
-    
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     GLFWwindow* window = glfwCreateWindow(1280,720,"Vulkan",nullptr,nullptr);
@@ -15,7 +14,6 @@ int main(){
     const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&extensionCount);
     std::vector<const char*> extensions(glfwExtensions,glfwExtensions + extensionCount);
     
-
     render2d::Init(extensions,[&](vk::Instance instance){
         VkSurfaceKHR surface;
         VkResult result = glfwCreateWindowSurface(instance,window,nullptr,&surface);

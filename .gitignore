@@ -5,3 +5,4 @@ library/
 build.ps1
 CMakeCache.txt
 .spv
+.clangd
